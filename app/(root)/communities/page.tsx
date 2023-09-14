@@ -3,9 +3,10 @@ import { redirect } from "next/navigation";
 
 import Searchbar from "@/components/shared/Searchbar";
 import Pagination from "@/components/shared/Pagination";
-import { fetchUser } from "@/lib/actions/user.action";
-import { fetchCommunities } from "@/lib/actions/community.actions";
 import CommunityCard from "@/components/cards/CommunityCard";
+
+import { fetchCommunities } from "@/lib/actions/community.actions";
+import { fetchUser } from "@/lib/actions/user.action";
 
 async function Page({
   searchParams,
@@ -38,7 +39,7 @@ async function Page({
         ) : (
           <>
             {result.communities.map((community) => (
-              <CommunityCard  
+              <CommunityCard
                 key={community.id}
                 id={community.id}
                 name={community.name}
@@ -52,11 +53,11 @@ async function Page({
         )}
       </section>
 
-      {/* <Pagination
+      <Pagination
         path="communities"
         pageNumber={searchParams?.page ? +searchParams.page : 1}
         isNext={result.isNext}
-      /> */}
+      />
     </>
   );
 }

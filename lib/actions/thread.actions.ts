@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { connectToDB } from "../mongoose";
+
 import Thread from "../models/thread.model";
-import { User } from "../models/user.model";
 import Community from "../models/community.model";
+import { User } from "../models/user.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -48,14 +49,18 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 }
 
 interface Params {
-  text: string,
-  author: string,
-  communityId: string | null,
-  path: string,
+  text: string;
+  author: string;
+  communityId: string | null;
+  path: string;
 }
 
-export async function createThread({ text, author, communityId, path }: Params
-) {
+export async function createThread({
+  text,
+  author,
+  communityId,
+  path,
+}: Params) {
   try {
     connectToDB();
 

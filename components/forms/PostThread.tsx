@@ -1,65 +1,58 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { useOrganization } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname, useRouter } from "next/navigation";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Schema } from "zod";
-import * as z from "zod";
-import Image from "next/image";
-import { Textarea } from "../ui/textarea";
-import { isBase64Image } from "@/lib/utils";
-import { useUploadThing } from "@/lib/uploadthing";
-import { updateUser } from "@/lib/actions/user.action";
-import { usePathname, useRouter } from "next/navigation";
-import { createThread } from "@/lib/actions/thread.action";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
 import { ThreadValidation } from "@/lib/validations/thread";
+import { createThread } from "@/lib/actions/thread.actions";
+
 interface Props {
-  user: {
-    id: string;
-    objectId: string;
-    username: string;
-    email: string;
-    name: string;
-    bio: string;
-    image: string;
-  };
-  btnTitle: string;
+  userId: string;
 }
 
-const PostThread = ({ userId }: { userId: string }) => {
+function PostThread({ userId }: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  const form = useForm({
+
+  const { organization } = useOrganization();
+
+  const form = useForm<z.infer<typeof ThreadValidation>>({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
       thread: "",
       accountId: userId,
     },
   });
+
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
     await createThread({
       text: values.thread,
       author: userId,
-      communityId: null,
+      communityId: organization ? organization.id : null,
       path: pathname,
     });
+
     router.push("/");
   };
+
   return (
     <Form {...form}>
       <form
-        className="flex flex-col justify-start gap-10 mt-10"
+        className="mt-10 flex flex-col justify-start gap-10"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -84,6 +77,6 @@ const PostThread = ({ userId }: { userId: string }) => {
       </form>
     </Form>
   );
-};
+}
 
 export default PostThread;

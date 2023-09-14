@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
@@ -7,8 +6,8 @@ import { profileTabs } from "@/constants";
 
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ThreadsTabs from "@/components/shared/ThreadTabs";
 import { fetchUser } from "@/lib/actions/user.action";
+import ThreadsTabs from "@/components/shared/ThreadTabs";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
