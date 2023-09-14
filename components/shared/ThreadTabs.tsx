@@ -9,7 +9,11 @@ interface Props {
   accountType: string;
 }
 
-const ThreadTabs = async ({ currentUserId, accountId, accountType }: Props) => {
+const ThreadsTabs = async ({
+  currentUserId,
+  accountId,
+  accountType,
+}: Props) => {
   // TODo: fecth profile threads
   let result = await fetchUserPosts(accountId);
 
@@ -46,4 +50,4 @@ const ThreadTabs = async ({ currentUserId, accountId, accountType }: Props) => {
   );
 };
 
-export default ThreadTabs;
+export default ThreadsTabs;
