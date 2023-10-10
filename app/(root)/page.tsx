@@ -1,6 +1,8 @@
+import Share from "@/components/cards/Share";
 import ThreadCard from "@/components/cards/ThreadCard";
 import Pagination from "@/components/shared/Pagination";
 import { fetchPosts } from "@/lib/actions/thread.action";
+import { fetchUser } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs";
 export default async function Home({
   searchParams,
@@ -13,6 +15,8 @@ export default async function Home({
   );
 
   const user = await currentUser();
+  if (!user) return null;
+  const userInfo = await fetchUser(user?.id);
   return (
     <>
       <h1 className="head-text text-left">Home</h1>
@@ -23,15 +27,16 @@ export default async function Home({
           <>
             {result.posts.map((post) => (
               <ThreadCard
-                key={post._id}
-                id={post._id}
-                currentUserId={user?.id || ""}
-                parentId={post.parentId}
-                content={post.text}
-                author={post.author}
-                createdAt={post.createdAt}
-                community={post.community}
-                comments={post.children}
+                key={post?._id}
+                id={post?._id}
+                currentUserId={JSON.stringify(userInfo?._id)}
+                parentId={post?.parentId}
+                content={post?.text}
+                author={JSON.stringify(post?.author)}
+                createdAt={post?.createdAt}
+                community={JSON.stringify(post.community)}
+                likes={JSON.stringify(post.likes)}
+                comments={JSON.stringify(post.children)}
               />
             ))}
           </>

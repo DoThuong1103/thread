@@ -162,3 +162,38 @@ export async function getActivity(userId: string) {
     throw error;
   }
 }
+
+export async function toggleLikeThread(
+  threadId: string,
+  userId: string,
+  path: string
+) {
+  try {
+    connectToDB();
+    const thread = await Thread.findById(threadId);
+
+    if (!thread) {
+      throw new Error("Thread not found");
+    }
+
+    const userLikedThread = thread?.likes?.some(
+      (like: any) => like.user == userId
+    );
+    const updateQuery = userLikedThread
+      ? { $pull: { likes: { user: userId } } }
+      : { $push: { likes: { user: userId, liked: true } } };
+
+    const updatedThread = await Thread.findByIdAndUpdate(
+      threadId,
+      updateQuery,
+      { upsert: true }
+    );
+
+    if (!updatedThread) {
+      throw new Error("Thread not found");
+    }
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to toggle like/unlike thread: ${error.message}`);
+  }
+}
